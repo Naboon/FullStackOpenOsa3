@@ -1,1 +1,1 @@
-GET https://guarded-hollows-92538.herokuapp.com/api/persons
+GET http://localhost:3001/api/persons
