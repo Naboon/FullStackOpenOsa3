@@ -34,19 +34,24 @@ app.get('/api/persons/:id', (req, res, next) => {
         .catch(error => next(error))
 })
 
-// app.get('/info', (req, res) => {
-//     let timestamp = new Date()
-//     res.send(`
-//         <p>
-//             Phonebook has info for ${persons.length} people
-//         </p>
-//         <p>
-//             ${timestamp.toDateString()}
-//             ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}
-//             GMT+0200 (Eastern European Standard Time)
-//         </p>
-//     `)
-// })
+app.get('/info', (req, res, next) => {
+    let timestamp = new Date()
+
+    Person.countDocuments()
+        .then(count => {
+            res.send(`
+                <p>
+                    Phonebook has info for ${count} people
+                </p>
+                <p>
+                    ${timestamp.toDateString()}
+                    ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}
+                    GMT+0200 (Eastern European Standard Time)
+                </p>
+            `)
+        })
+        .catch(error => next(error))
+})
 
 app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndRemove(req.params.id)
@@ -79,6 +84,29 @@ app.post('/api/persons', (req, res, next) => {
             res.json(savedPerson)
         })
         .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+    const body = req.body
+
+    const person = {
+        name: body.name,
+        number: body.number,
+    }
+
+    Person.findByIdAndUpdate(req.params.id, person, { new: true })
+        .then(updatedPerson => {
+            res.json(updatedPerson)
+        })
+        .catch(error => next(error))
+})
+
+const personCount = Person.countDocuments({}, (error, count) => {
+    if(error) {
+        next(error)
+    } else {
+        return count
+    }
 })
 
 const unknownEndpoint = (req, res) => {
