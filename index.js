@@ -18,7 +18,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 app.get('/api/persons', (req, res, next) => {
   Person.find({})
-   .then(persons => {
+    .then(persons => {
       res.json(persons)
     })
     .catch(error => next(error))
@@ -34,7 +34,7 @@ app.get('/api/persons/:id', (req, res, next) => {
       }
     })
     .catch(error => next(error))
-  })
+})
 
 app.get('/info', (req, res, next) => {
   let timestamp = new Date()
@@ -57,7 +57,7 @@ app.get('/info', (req, res, next) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
-    .then(result => {
+    .then(() => {
       res.status(204).end()
     })
     .catch(error => next(error))
